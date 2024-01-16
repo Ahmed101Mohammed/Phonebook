@@ -44,16 +44,21 @@ const idGenerator = ()=>
 app.post('/api/persons/',(req,res)=>{
   const personName = req.body.name;
   const personNumber = req.body.number;
-
-  if(personName && personNumber)
+  const person = phoneBookData.find(person=> person.name === personName);
+  if(personName && personNumber && !person)
   {
     const newPerson = {id:idGenerator(),name:personName,number:personNumber};
     phoneBookData.push(newPerson);
     res.json(newPerson);
   }
+  else if(person)
+  {
+    res.status(404).send({erro: 'Name must be unique.'})
+  }
   else
   {
-    res.status(404).send({"Error":"There are messing data. Sure that you send name and number of the person."})
+    
+    res.status(404).send({"Error":"There are messing data (name or number)."})
   }
   
 })
