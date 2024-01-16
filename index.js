@@ -1,8 +1,10 @@
 const express = require('express');
+const morgan = require('morgan');
 let phoneBookData = require('./data');
 
 const app = express();
 app.use(express.json());
+app.use(morgan('tiny'))
 
 app.get('/info',(req,res)=>{
   const message = `<p>Phonebook has info for ${phoneBookData.length} people.</p> <p>${new Date()}</p>`;
