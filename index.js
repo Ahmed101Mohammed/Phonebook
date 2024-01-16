@@ -35,5 +35,28 @@ app.delete('/api/persons/:id',(req,res)=>
   res.status(204).end()
 })
 
+const idGenerator = ()=>
+{
+  const min = Math.max(...phoneBookData.map(person=>person.id));
+  const random = Math.ceil(Math.random() * 1000);
+  return random+min;
+}
+app.post('/api/persons/',(req,res)=>{
+  const personName = req.body.name;
+  const personNumber = req.body.number;
+
+  if(personName && personNumber)
+  {
+    const newPerson = {id:idGenerator(),name:personName,number:personNumber};
+    phoneBookData.push(newPerson);
+    res.json(newPerson);
+  }
+  else
+  {
+    res.status(404).send({"Error":"There are messing data. Sure that you send name and number of the person."})
+  }
+  
+})
+
 const PORT = 3001;
 app.listen(PORT,()=>console.log(`Server runing at port:${PORT}`))
