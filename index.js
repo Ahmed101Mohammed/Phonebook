@@ -4,7 +4,16 @@ let phoneBookData = require('./data');
 
 const app = express();
 app.use(express.json());
-app.use(morgan('tiny'))
+app.use(morgan(function (tokens, req, res) {
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'), '-',
+    tokens['response-time'](req, res), 'ms',
+    Object.keys(req.body).length === 0? '':JSON.stringify(req.body)
+  ].join(' ')
+}));
 
 app.get('/info',(req,res)=>{
   const message = `<p>Phonebook has info for ${phoneBookData.length} people.</p> <p>${new Date()}</p>`;
