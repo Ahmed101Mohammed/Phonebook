@@ -1,8 +1,10 @@
 const express = require('express');
+const cors = require('cors');
 const morgan = require('morgan');
 let phoneBookData = require('./data');
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(morgan(function (tokens, req, res) {
   return [
