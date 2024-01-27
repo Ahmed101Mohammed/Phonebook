@@ -1,7 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-let phoneBookData = require('./data');
+const Person =  require('./models/db')
 
 const app = express();
 app.use(express.static('dist'))
@@ -25,7 +26,12 @@ app.get('/info',(req,res)=>{
 
 app.get('/api/persons/',(req,res)=>
 {
-  res.json(phoneBookData)
+  Person.find({})
+  .then(persons=>res.json(persons))
+  .catch(error=>{
+    console.log("Error of geting all persons data:",error)
+    res.status(500).send('Failed in DB.')
+  })
 })
 
 app.get('/api/persons/:id',(req,res)=>
