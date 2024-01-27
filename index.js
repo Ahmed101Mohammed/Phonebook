@@ -55,32 +55,40 @@ app.delete('/api/persons/:id',(req,res)=>
   res.status(204).end()
 })
 
-const idGenerator = ()=>
-{
-  const min = Math.max(...phoneBookData.map(person=>person.id));
-  const random = Math.ceil(Math.random() * 1000);
-  return random+min;
-}
 app.post('/api/persons/',(req,res)=>{
+
   const personName = req.body.name;
   const personNumber = req.body.number;
-  const person = phoneBookData.find(person=> person.name === personName);
-  if(personName && personNumber && !person)
-  {
-    const newPerson = {id:idGenerator(),name:personName,number:personNumber};
-    phoneBookData.push(newPerson);
-    res.json(newPerson);
-  }
-  else if(person)
-  {
-    res.status(404).send({erro: 'Name must be unique.'})
-  }
-  else
-  {
-    
-    res.status(404).send({"Error":"There are messing data (name or number)."})
-  }
+  const newPerson = Person({
+    name: req.body.name,
+    number: req.body.number,
+  })
   
+  Person.find({name:req.body.name})
+  .then(result=>{
+    console.log("Exist:",result)
+    if(result.length > 0)
+    {
+      res.json({Error:"The person name is already exist before"})
+    }
+    else if(personName && personNumber)
+    {
+     newPerson.save()
+      .then(data=>
+      {
+        res.json(data)
+      })
+      .catch(error=>{
+        res.json({Error: `Failed to save data: ${error}`})
+      })
+    }
+    else
+    {
+      res.status(404).send({"Error":"There are messing data (name or number)."})
+    }
+ 
+  })
+ 
 })
 
 const PORT = process.env.PORT||3001;
