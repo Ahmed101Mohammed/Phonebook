@@ -37,16 +37,10 @@ app.get('/api/persons/',(req,res)=>
 
 app.get('/api/persons/:id',(req,res)=>
 {
-  const id = Number(req.params.id);
-  const person = phoneBookData.find(person=>person.id===id);
-  if(person)
-  {
-    res.json(person)
-  }
-  else
-  {
-    res.status(404).end();
-  }
+
+  Person.findById(req.params.id)
+  .then(result=>res.json(result))
+  .catch(e=>next(e))
 })
 
 app.delete('/api/persons/:id',(req,res,next)=>
@@ -95,6 +89,15 @@ app.post('/api/persons/',(req,res)=>{
   })
  
 })
+
+app.put('/api/persons/:id', (req,res)=>
+{
+  req.body.id = req.params.id;
+  Person.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  .then(result=> res.json(result))
+  .catch(e=>next(e))
+})
+
 
 app.use(errorHandler);
 const PORT = process.env.PORT||3001;
