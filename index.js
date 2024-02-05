@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const Person =  require('./models/db')
+const errorHandler = require('./midleware/errorHandling');
 
 const app = express();
 app.use(express.static('dist'))
@@ -48,11 +49,11 @@ app.get('/api/persons/:id',(req,res)=>
   }
 })
 
-app.delete('/api/persons/:id',(req,res)=>
+app.delete('/api/persons/:id',(req,res,next)=>
 {
-  const id = Number(req.params.id);
-  phoneBookData = phoneBookData.filter(person=>person.id !== id)
-  res.status(204).end()
+  Person.findByIdAndDelete(req.params.id)
+  .then(result=>res.status(204).end())
+  .catch(e=>next(e))
 })
 
 app.post('/api/persons/',(req,res)=>{
@@ -91,5 +92,6 @@ app.post('/api/persons/',(req,res)=>{
  
 })
 
+app.use(errorHandler);
 const PORT = process.env.PORT||3001;
 app.listen(PORT,()=>console.log(`Server runing at port:${PORT}`))
