@@ -11,6 +11,9 @@ const errorHandler = (error,req,res,next)=>
         case "CastError":
             res.status(400).end("<h1>This is a bad request; the id is malformed. please enter good formated id.</h1>");
             break;
+        case "ValidationError":
+            res.status(400).json(error.message)
+            break;
         default:
             res.send("<h1>No handeled message</h1>");
     }

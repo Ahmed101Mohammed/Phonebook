@@ -54,7 +54,7 @@ app.delete('/api/persons/:id',(req,res,next)=>
   .catch(e=>next(e))
 })
 
-app.post('/api/persons/',(req,res)=>{
+app.post('/api/persons/',(req,res,next)=>{
 
   const personName = req.body.name;
   const personNumber = req.body.number;
@@ -78,7 +78,7 @@ app.post('/api/persons/',(req,res)=>{
         res.json(data)
       })
       .catch(error=>{
-        res.json({Error: `Failed to save data: ${error}`})
+        next(error)
       })
     }
     else
@@ -93,7 +93,7 @@ app.post('/api/persons/',(req,res)=>{
 app.put('/api/persons/:id', (req,res, next)=>
 {
   req.body.id = req.params.id;
-  Person.findByIdAndUpdate(req.params.id, req.body, {new: true})
+  Person.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators:true, context:'query'})
   .then(result=> res.json(result))
   .catch(e=>next(e))
 })
