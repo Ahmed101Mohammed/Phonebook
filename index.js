@@ -35,7 +35,7 @@ app.get('/api/persons/',(req,res)=>
   })
 })
 
-app.get('/api/persons/:id',(req,res)=>
+app.get('/api/persons/:id',(req, res, next)=>
 {
 
   Person.findById(req.params.id)
@@ -90,7 +90,7 @@ app.post('/api/persons/',(req,res)=>{
  
 })
 
-app.put('/api/persons/:id', (req,res)=>
+app.put('/api/persons/:id', (req,res, next)=>
 {
   req.body.id = req.params.id;
   Person.findByIdAndUpdate(req.params.id, req.body, {new: true})
